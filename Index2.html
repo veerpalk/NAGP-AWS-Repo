@@ -1,0 +1,79 @@
+<html>
+<header>
+<title>Hello World</title>
+<script src="https://sdk.amazonaws.com/js/aws-sdk-2.357.0.min.js"></script>
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script type="text/javascript">
+
+//Bucket Configurations
+
+var bucketName = 'BUCKET_NAME';
+var bucketRegion = 'BUCKET_REGION';
+var IdentityPoolId = 'IDENTITY_POOL_ID';
+
+
+AWS.config.update({
+                region: bucketRegion,
+                credentials: new AWS.CognitoIdentityCredentials({
+                IdentityPoolId: IdentityPoolId
+                })
+            });
+
+AWS.config.region = 'us-west-2';
+
+var s3 = new AWS.S3({
+                apiVersion: '2006-03-01',
+                params: {Bucket: bucketName}
+        });
+</script>
+
+</header>
+<body>
+Hello NAGP User <br/>
+
+<div>Please Upload a file</div>
+    <!-- A functional html code-->
+<div>
+    <input type="file" id="fileUpload">
+</div>
+<div>
+<button onclick="s3upload()">Submit</button>
+</div>
+
+
+<script type="text/javascript">
+
+    function s3upload() {  
+              var files = document.getElementById('fileUpload').files;
+              if (!files.length) {
+                                 return alert("Please choose a file to upload first.");
+                                 }
+              if (files) 
+              {
+                  var file = files[0];
+                  var fileName = file.name;
+                  var filePath = 'ui-uploaded-files/' + fileName;
+                  var fileUrl = 'https://' + bucketRegion + '.amazonaws.com/my-first-bucket/' +  filePath;
+          
+              var upload = new AWS.S3.ManagedUpload({
+              params: {
+              Bucket: bucketName,
+              Key: filePath,
+              Body: file,
+              ACL: "public-read"
+              }
+              });
+
+              var promise = upload.promise();
+
+              promise.then(
+                 function(data) {
+                     alert("Successfully uploaded photo.");
+                     },
+                 function(err) {
+                      return alert("There was an error uploading your file: ", err.message);
+                     });}
+    }
+</script>
+</body>
+</html>
