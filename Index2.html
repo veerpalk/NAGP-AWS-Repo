@@ -7,9 +7,9 @@
 
 //Bucket Configurations
 
-var bucketName = 'BUCKET_NAME';
-var bucketRegion = 'BUCKET_REGION';
-var IdentityPoolId = 'IDENTITY_POOL_ID';
+var bucketName = 'demo-files-upload';
+var bucketRegion = 'US West (Oregon)';
+var IdentityPoolId = 'us-west-2:0227a24a-6298-4e23-8741-6170826bf813';
 
 
 AWS.config.update({
@@ -46,8 +46,8 @@ Hello NAGP User <br/>
     function s3upload() {  
               var files = document.getElementById('fileUpload').files;
               if (!files.length) {
-                                 return alert("Please choose a file to upload first.");
-                                 }
+    return alert("Please choose a file to upload first.");
+  }
               if (files) 
               {
                   var file = files[0];
@@ -55,25 +55,28 @@ Hello NAGP User <br/>
                   var filePath = 'ui-uploaded-files/' + fileName;
                   var fileUrl = 'https://' + bucketRegion + '.amazonaws.com/my-first-bucket/' +  filePath;
           
-              var upload = new AWS.S3.ManagedUpload({
-              params: {
-              Bucket: bucketName,
-              Key: filePath,
-              Body: file,
-              ACL: "public-read"
-              }
-              });
-
-              var promise = upload.promise();
-
-              promise.then(
-                 function(data) {
-                     alert("Successfully uploaded photo.");
-                     },
-                 function(err) {
-                      return alert("There was an error uploading your file: ", err.message);
-                     });}
+  var upload = new AWS.S3.ManagedUpload({
+    params: {
+      Bucket: bucketName,
+      Key: filePath,
+      Body: file,
+      ACL: "public-read"
     }
-</script>
+  });
+
+  var promise = upload.promise();
+
+  promise.then(
+    function(data) {
+      alert("Successfully uploaded photo.");
+    //  viewAlbum(albumName);
+    },
+    function(err) {
+      return alert("There was an error uploading your file: ", err.message);
+    }
+  );
+}
+  
+    }</script>
 </body>
 </html>
